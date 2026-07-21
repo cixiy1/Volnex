@@ -1,7 +1,7 @@
 // 网络层：高校数据服务（模拟请求）
 //
 // 说明：
-// - 本文件提供高校数据的加载与查询能力，包��模拟网络请求和本地注册表；
+// - 本文件提供高校数据的加载与查询能力，包含模拟网络请求和本地注册表；
 // - 正式对接后只需替换 fetchUniversities() 的实现为真实的 HTTP 请求即可；
 // - UniversityRegistry 作为全局数据缓存，供路由和详情页的同步查找使用。
 import 'package:flutter/material.dart';
@@ -19,8 +19,10 @@ const int _kMockDelay = 3000;
 class UniversityRegistry {
   UniversityRegistry._();
 
+  // 单例模式：全局共享唯一实例
   static final UniversityRegistry shared = UniversityRegistry._();
 
+  // 以 id 为键的高校 Map，用于 O(1) 查找
   final Map<String, University> _map = {};
 
   /// 初始化注册表（同步替换所有数据）
@@ -43,6 +45,7 @@ Future<List<University>> fetchUniversities() async {
   // 模拟网络请求耗时
   await Future<void>.delayed(const Duration(milliseconds: _kMockDelay));
 
+  // 构建高校列表数据（真实项目中应替换为 HTTP 请求的 JSON 解析）
   final universities = <University>[
     University(
       id: 'xmu',

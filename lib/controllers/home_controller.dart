@@ -3,7 +3,7 @@
 // 说明：
 // - 该控制器是应用的主要业务逻辑中心，负责维护考生档案（省份、位次）与高校列表等全局状态；
 // - 使用 GetX 的响应式变量（Rx*）存储状态，所有页面和组件可以通过 Get.find 访问该控制器；
-// - 在 onInit 生命周期中自动加载高校数据，并提供更��档案的方法供外部调用。
+// - 在 onInit 生命周期中自动加载高校数据，并提供更新档案的方法供外部调用。
 import 'package:get/get.dart';
 import 'package:volnex/models/university.dart';
 import 'package:volnex/core/network/university_service.dart';
@@ -36,7 +36,7 @@ class HomeController extends GetxController {
 
   /// 异步加载高校列表数据
   ///
-  /// - 在加载开始���结束时更新 isLoading 状态；
+  /// - 在加载开始和结束时更新 isLoading 状态；
   /// - 使用 try/finally 确保即使出错也会关闭加载状态；
   /// - 加载成功后，新数据通过 assignAll 替换现有列表（触发所有监听器更新）。
   Future<void> loadUniversities() async {

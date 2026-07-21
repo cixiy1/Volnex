@@ -15,6 +15,7 @@ import 'package:volnex/core/network/university_service.dart';
 ///
 /// 从 UniversityRegistry 同步查找，找到返回 University 对象，否则返回 null。
 University? resolveUniversity(String? id) {
+  // 防御性检查：空 id 直接返回 null，避免注册表查询出错
   if (id == null || id.isEmpty) return null;
   return UniversityRegistry.shared.findById(id);
 }
