@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class University {
   const University({
+    required this.id,
     required this.name,
     required this.city,
     required this.level,
@@ -13,6 +14,9 @@ class University {
     required this.summary,
     required this.color,
   });
+
+  /// 高校唯一标识符，用于 URL 路径参数（如 /university/xmu）
+  final String id;
 
   final String name;
   final String city;

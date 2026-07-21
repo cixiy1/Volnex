@@ -27,9 +27,10 @@ class VolnexApp extends StatelessWidget {
 }
 
 // 数据模型：高校（University）
-// 用于表示一所高校的基本���息，例如名称、城市、层次、录取位次等
+// 用于表示一所高校的基本信息，例如名称、城市、层次、录取位次等
 class University {
   const University({
+    required this.id,
     required this.name,
     required this.city,
     required this.level,
@@ -40,19 +41,22 @@ class University {
     required this.color,
   });
 
-  final String name; // 学校名称
-  final String city; // 所在城市或省市信息
-  final String level; // 学校层次（如 985、211 等）
-  final int cutoffRank; // 近年录取位次或参考位次，用于与考生位次比较
-  final List<String> tags; // 学校特色标签（用于搜索/筛选展示）
-  final String environment; // 校园环境描述
-  final String summary; // 适合人群/学校简介
-  final Color color; // 在 UI 中用于区分学校的主题色
+  /// 高校唯一标识符，用于 URL 路径参数
+  final String id;
+  final String name;
+  final String city;
+  final String level;
+  final int cutoffRank;
+  final List<String> tags;
+  final String environment;
+  final String summary;
+  final Color color;
 }
 
 // 示例数据：一些高校信息的常量列表
 const List<University> universities = <University>[
   University(
+    id: 'xmu',
     name: '厦门大学',
     city: '福建 · 厦门',
     level: '985 / 双一流',
@@ -63,6 +67,7 @@ const List<University> universities = <University>[
     color: Color(0xff1E7A67),
   ),
   University(
+    id: 'suda',
     name: '苏州大学',
     city: '江��� · 苏州',
     level: '211 / 双一流',
@@ -73,6 +78,7 @@ const List<University> universities = <University>[
     color: Color(0xff8E5A30),
   ),
   University(
+    id: 'szu',
     name: '深圳大学',
     city: '广东 · 深圳',
     level: '省属重点',
@@ -83,6 +89,7 @@ const List<University> universities = <University>[
     color: Color(0xff3B6FB6),
   ),
   University(
+    id: 'ouc',
     name: '中国海洋大学',
     city: '山东 · 青岛',
     level: '985 / 双一流',
@@ -93,6 +100,7 @@ const List<University> universities = <University>[
     color: Color(0xff276E9E),
   ),
   University(
+    id: 'swu',
     name: '西南大学',
     city: '重庆 · 北碚',
     level: '211 / 双��流',
@@ -103,6 +111,7 @@ const List<University> universities = <University>[
     color: Color(0xff8D5D27),
   ),
   University(
+    id: 'nuist',
     name: '南京信息工程大学',
     city: '江苏 · 南京',
     level: '双一流',
@@ -340,7 +349,7 @@ class UniversityCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        // 点击卡片进入学校详情页
+        // 规范跳转：URL 带 :id（可分享、可刷新恢复），extra 传对象供详情页直接使用
         onTap: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => UniversityDetailPage(university: university))),
         child: Padding(
           padding: const EdgeInsets.all(16),

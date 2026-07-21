@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 // 第三方存储包
 import 'package:shared_preferences/shared_preferences.dart';
+import '../core/network/university_service.dart';
 import '../theme/theme_controller.dart';
 
 class AppInitService {
@@ -14,12 +15,19 @@ class AppInitService {
     // 1. 初始化本地持久化存储（第三方包 shared_preferences）
     await _initLocalStorage();
 
-    // 2. 可拓展：初始化dio、推送、埋点、图片缓存等第三方SDK
-    // await _initDio();
-    // await _initPush();
+    // 2. 预加载高校数据到注册表，供路由在 build 之前解析 URL 参数
+    await _initUniversityData();
 
     // 3. 注册全局常驻业务服务
     _registerGlobalService();
+  }
+
+  /// 预加载高校数据
+  ///
+  /// 在 AppInitService 初始化阶段调用，确保 GoRouter 解析 URL 时
+  /// UniversityRegistry 已有数据可用，避免直接访问 URL 时注册表为空的竞速问题。
+  Future<void> _initUniversityData() async {
+    await fetchUniversities();
   }
 
   // 初始化本地缓存

@@ -4,15 +4,42 @@ import 'package:flutter/material.dart';
 import 'package:volnex/models/university.dart';
 
 /// 模拟网络延迟（毫秒）
-const int _kMockDelay = 3000;
+const int _kMockDelay = 300;
+
+/// 高校全局注册表
+///
+/// 提供同步的 id 查找能力，供路由 builder 与详情页使用。
+/// 数据在 fetchUniversities() 调用后自动同步写入。
+class UniversityRegistry {
+  UniversityRegistry._();
+
+  static final UniversityRegistry shared = UniversityRegistry._();
+
+  final Map<String, University> _map = {};
+
+  /// 初始化注册表（同步替换所有数据）
+  void load(List<University> universities) {
+    _map.clear();
+    for (final u in universities) {
+      _map[u.id] = u;
+    }
+  }
+
+  /// 根据 id 查找高校，未找到返回 null
+  University? findById(String id) => _map[id];
+
+  /// 注册表是否已有数据（用于路由兜底判断）
+  bool get hasData => _map.isNotEmpty;
+}
 
 /// 模拟从服务器获取高校列表
 Future<List<University>> fetchUniversities() async {
   // 模拟网络请求耗时
   await Future<void>.delayed(const Duration(milliseconds: _kMockDelay));
 
-  return <University>[
+  final universities = <University>[
     University(
+      id: 'xmu',
       name: '厦门大学',
       city: '福建 · 厦门',
       level: '985 / 双一流',
@@ -23,6 +50,7 @@ Future<List<University>> fetchUniversities() async {
       color: const Color(0xff1E7A67),
     ),
     University(
+      id: 'suda',
       name: '苏州大学',
       city: '江苏 · 苏州',
       level: '211 / 双一流',
@@ -33,6 +61,7 @@ Future<List<University>> fetchUniversities() async {
       color: const Color(0xff8E5A30),
     ),
     University(
+      id: 'szu',
       name: '深圳大学',
       city: '广东 · 深圳',
       level: '省属重点',
@@ -43,6 +72,7 @@ Future<List<University>> fetchUniversities() async {
       color: const Color(0xff3B6FB6),
     ),
     University(
+      id: 'ouc',
       name: '中国海洋大学',
       city: '山东 · 青岛',
       level: '985 / 双一流',
@@ -53,6 +83,7 @@ Future<List<University>> fetchUniversities() async {
       color: const Color(0xff276E9E),
     ),
     University(
+      id: 'swu',
       name: '西南大学',
       city: '重庆 · 北碚',
       level: '211 / 双一流',
@@ -63,6 +94,7 @@ Future<List<University>> fetchUniversities() async {
       color: const Color(0xff8D5D27),
     ),
     University(
+      id: 'nuist',
       name: '南京信息工程大学',
       city: '江苏 · 南京',
       level: '双一流',
@@ -73,4 +105,9 @@ Future<List<University>> fetchUniversities() async {
       color: const Color(0xff7950A0),
     ),
   ];
+
+  // 同步写入注册表，确保路由查找可用
+  UniversityRegistry.shared.load(universities);
+
+  return universities;
 }
