@@ -20,6 +20,10 @@ android/app/build/
 android/build/
 android/local.properties
 android/key.properties
+android/gradle/wrapper/gradle-wrapper.jar
+android/gradlew
+android/gradlew.bat
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
 ios/Pods/
 ios/.symlinks/
 ios/build/
@@ -39,6 +43,7 @@ windows/flutter/ephemeral/
 *.iml
 *.ipr
 *.iws
+.metadata
 
 # ---------- 系统文件 ----------
 .DS_Store
