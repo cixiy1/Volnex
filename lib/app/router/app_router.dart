@@ -13,9 +13,6 @@ import 'package:go_router/go_router.dart';
 // 路由路径常量集中管理，避免硬编码字符串（如 '/university/:id'）
 import 'package:volnex/app/router/route_paths.dart';
 
-// 高校详情页：传入 URL 中的 :id 参数后渲染具体高校信息
-import 'package:volnex/pages/app/university_detail_page.dart';
-
 // 首页外壳布局：包含响应式 NavigationRail（宽屏）/ BottomNav（窄屏）以及 4 个 Tab 内容区
 import 'package:volnex/components/layout/home_shell.dart';
 
@@ -36,18 +33,6 @@ final GoRouter appRouter = GoRouter(
       name: 'home',
       // builder：路径匹配后调用此工厂函数，生成实际页面 Widget
       builder: (BuildContext context, GoRouterState state) => const HomeShell(),
-    ),
-
-    // 高校详情页路由：动态路径 '/university/:id'，:id 为高校唯一标识（如 'xmu'）
-    GoRoute(
-      path: RoutePaths.universityDetail,
-      name: 'universityDetail',
-      builder: (BuildContext context, GoRouterState state) {
-        // 从 URL 路径参数中提取 ':id'，如 '/university/xmu' → universityId = 'xmu'
-        final universityId = state.pathParameters['id'];
-        // 将 id 传递给 UniversityDetailPage，由该页面负责从 UniversityRegistry 查询完整数据
-        return UniversityDetailPage(universityId: universityId);
-      },
     ),
   ],
 );

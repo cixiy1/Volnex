@@ -16,14 +16,8 @@ import 'package:flutter/material.dart';
 // GetX 状态管理库，提供依赖注入（Get.find）和响应式状态（Obx）
 import 'package:get/get.dart';
 
-// 应用内控制器：HomeController 管理考生档案（省份、位次）和高校列表
-import 'package:volnex/controllers/home_controller.dart';
-
 // 应用内控制器：TabIndexController 管理底部/侧边栏的当前选中 tab 索引
 import 'package:volnex/controllers/tab_index_controller.dart';
-
-// 考生档案底部弹窗组件（通过 ProfileSheet.show 调用）
-import 'package:volnex/components/common/profile_sheet.dart';
 
 // Tab 导航组件：封装 NavigationRail（宽屏侧边栏）和 NavigationBar（窄屏底部栏）
 import 'package:volnex/components/tab/home_tab.dart';
@@ -104,17 +98,8 @@ class HomeShell extends StatelessWidget {
                 Text('高考志愿助手', style: TextStyle(fontSize: 14)),
               ],
             ),
-            // 右上角操作按钮区域
-            actions: <Widget>[
-              // 点击打开个人档案弹窗（ProfileSheet），允许用户设置省份和位次
-              TextButton.icon(
-                onPressed: () => _showProfile(context),
-                icon: const Icon(Icons.person_outline),
-                label: const Text('我的档案'),
-              ),
-              // 右侧留一点间距，防止按钮紧贴边缘
-              const SizedBox(width: 12),
-            ],
+            // 右上角操作按钮区域（开发骨架阶段暂留空）
+            actions: const <Widget>[],
           ),
 
           // 主体内容区域：
@@ -154,32 +139,5 @@ class HomeShell extends StatelessWidget {
         );
       },
     );
-  }
-
-  /// 打开"我的档案"弹窗并处理返回结果
-  ///
-  /// 逻辑：
-  /// - 通过 Get.find 获取 `HomeController`（包含用户档案信息：省份、位次）
-  /// - 调用 `ProfileSheet.show` 弹出底部面板，传入当前的省份与排位作为表单初始值
-  /// - 若用户在面板中确认并返回结果，则调用控制器的 `updateProfile` 更新数据
-  Future<void> _showProfile(BuildContext context) async {
-    // 获取 HomeController，用于读取当前档案值并接收更新后的结果
-    final HomeController ctrl = Get.find<HomeController>();
-
-    // 弹出底部档案编辑面板（ProfileSheet），等待用户输入或确认
-    final result = await ProfileSheet.show(
-      context,
-      // 从控制器中读取当前已保存的省份作为表单初始值
-      initialProvince: ctrl.province.value,
-      // 从控制器中读取当前已保存的全省位次作为表单初始值
-      initialRank: ctrl.candidateRank.value,
-    );
-
-    // 如果用户点击"保存"（返回非 null），result 为 (province, candidateRank) 元组
-    if (result != null) {
-      // 将用户输入的新值同步回 HomeController，触发推荐结果重新计算
-      ctrl.updateProfile(province: result.$1, candidateRank: result.$2);
-    }
-    // 若用户取消（返回 null），不执行任何操作，档案保持原值
   }
 }
