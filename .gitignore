@@ -1,45 +1,53 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+# ============================================================
+# Volnex .gitignore  (Flutter application)
+# 说明：屏蔽编译产物、依赖缓存、IDE 配置与本地环境文件。
+# 注意：本项目是「应用」而非「库」，pubspec.lock 需纳入版本控制，故不忽略。
+# ============================================================
 
-# IntelliJ related
+# ---------- Flutter / Dart 编译产物与缓存 ----------
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+coverage/
+
+# ---------- iOS / Android 原生编译产物 ----------
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/key.properties
+ios/Pods/
+ios/.symlinks/
+ios/build/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+*.p12
+*.mobileprovision
+
+# ---------- 桌面/Web 平台编译产物 ----------
+linux/flutter/ephemeral/
+macos/Flutter/ephemeral/
+windows/flutter/ephemeral/
+
+# ---------- IDE / 编辑器配置 ----------
+.idea/
+.vscode/
 *.iml
 *.ipr
 *.iws
-.idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# ---------- 系统文件 ----------
+.DS_Store
+Thumbs.db
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-/coverage/
+# ---------- 环境变量 ----------
+.env
+.env.local
+.env.*.local
 
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# ---------- 日志 ----------
+*.log

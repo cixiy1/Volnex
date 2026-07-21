@@ -1,150 +1,80 @@
-# Volnex 项目结构说明（开源标准文档）
+# Volnex 项目结构说明
 
-## 📁 项目整体架构概述
+> 本文档描述项目**真实**的目录结构与分层职责，供快速理解与二次开发。
 
-Volnex 基于 **Flutter 跨端架构 \+ OpenClaw AI 本地智能体网关** 构建，采用**前端分层架构 \+ 服务解耦设计**。
+## 一、项目概述
 
-整体分为两大体系：
+Volnex 是一个基于 **Flutter** 的高考志愿填报辅助应用。核心能力：依据考生 **省份 + 全省位次**，将高校按「冲 / 稳 / 保」智能分组推荐，并提供高校库、数据中心与设置。
 
-- **Flutter 前端业务层**（UI、页面、状态、工具、网络）
+- 状态管理 / 依赖注入：**GetX**
+- 路由：**go_router**（`GetMaterialApp.router`）
+- 本地存储：**shared_preferences**
+- 一套代码多端编译：Android / iOS / Windows / macOS / Linux / Web
 
-- **OpenClaw AI 底层网关层**（进程管理、AI 分析、渠道、智能体任务）
+## 二、根目录结构
 
-架构完全解耦，UI 不碰底层逻辑，业务不硬编码常量，便于长期迭代、多端打包、二次开发。
-
----
-
-## 📁 根目录结构说明
-
-```Plain Text
+```text
 volnex/
-├── .agents         # AI智能体脚本、志愿分析工作流配置
-├── .openclaw       # 网关核心配置、缓存、通道数据
-├── android/ios/windows/macos/linux/web  # 各平台原生编译工程
-├── build           # 编译产物（可随时删除）
-├── test            # 单元测试
-└── lib/            # Flutter 核心业务源码（100%开发重心）
+├── lib/                # Flutter 核心业务源码（开发重心）
+├── test/               # 单元/组件测试
+├── android/ ios/ web/
+│   windows/ macos/ linux/   # 各平台原生工程（打包/权限，日常不动）
+├── build/              # 编译产物（已被 .gitignore 忽略，可随时删除）
+├── assets/             # 静态资源
+├── pubspec.yaml        # 依赖与资源声明
+├── pubspec.lock        # 依赖锁定（应用需纳入版本控制）
+├── analysis_options.yaml   # Dart 静态分析/lint 规则
+├── .githooks/          # 版本化的 git 钩子（pre-commit / commit-msg）
+└── README.md           # 项目说明
 ```
 
-### 根目录特殊目录解释
+## 三、lib 分层结构（开发重点）
 
-- **\.agents**：存放 AI 志愿策略、自动分析规则、任务流脚本
+采用 **入口 / 应用配置 / 控制器 / 核心 / 模型 / 服务 / 组件 / 页面 / 主题** 的分层：
 
-- **\.openclaw**：网关端口、代理、channel 渠道、令牌、运行缓存
-
-- **各平台文件夹**：仅打包、权限、原生功能使用，日常开发不动
-
----
-
-## 📁 Lib 核心源码分层结构（开发重点）
-
-采用行业标准 **App / Core / Service / Model / Page / Widget** 六层架构。
-
-```Plain Text
+```text
 lib/
-├── main.dart        # 项目入口、全局初始化、网关预启动
-├── app/             # 全局应用配置层
-├── core/            # 底层工具核心层
-├── models/          # 全局数据实体类
-├── services/        # 业务逻辑服务层
-├── pages/           # 所有业务页面
-└── widgets/         # 全局可复用组件
+├── main.dart        # 入口，仅调用 app()
+├── app/             # 应用启动与路由
+├── controllers/     # GetX 控制器（业务状态中心）
+├── core/            # 底层能力（网络、工具）
+├── models/          # 数据实体
+├── services/        # 启动初始化/业务服务
+├── components/      # 可复用 UI 组件
+├── pages/           # 业务页面
+└── theme/           # 主题与配色
 ```
 
----
+### 各层职责
 
-## 📌 各层级详细职责说明
+| 层 | 目录 | 职责 |
+|----|------|------|
+| 入口 | `main.dart` → `app/app.dart` | 引擎绑定 → 全局异常捕获 → 初始化 → 启动 `GetMaterialApp.router` |
+| 路由 | `app/router/` | `app_router.dart` 定义路由表；`route_paths.dart` 路径常量 |
+| 状态 | `controllers/` | `HomeController`（省份/位次/高校列表/加载态）、`TabIndexController`（Tab 索引） |
+| 核心 | `core/network/` `core/utils/` | 高校数据服务 + 注册表；异常捕获；按 id 解析高校 |
+| 模型 | `models/university.dart` | 高校实体（名称/城市/层次/录取位次/标签等） |
+| 服务 | `services/app_init_service.dart` | 初始化 SharedPreferences、预加载数据、注册全局服务 |
+| 组件 | `components/common\|layout\|tab` | 卡片、页头、档案弹窗、响应式导航壳、推荐分组等 |
+| 页面 | `pages/app/...` | 智能推荐、高校库、数据中心、设置、高校详情 |
+| 主题 | `theme/` | 静态默认配色常量 + 响应式主题控制器（持久化） |
 
-### 1\. app —— 全局应用层
+## 四、关键机制
 
-管理整个 App 的全局状态，不写业务逻辑。
+- **响应式状态**：控制器用 `Rx*` 变量，页面用 `Obx` 监听，`Get.find` 获取单例。
+- **响应式布局**：`home_shell.dart` 用 `LayoutBuilder` + 880px 阈值切换侧栏/底栏；`IndexedStack` 保留各 Tab 状态。
+- **数据注册表**：`UniversityRegistry` 提供按 id 的同步查找，供路由在 build 前解析 URL 参数。
+- **数据可替换**：`fetchUniversities()` 当前返回内置模拟数据；对接后端时替换该函数即可，上层无需改动。
 
-- 路由管理、页面跳转
+## 五、开发规范
 
-- 全局主题、颜色、字体样式
+- 页面只写 UI 与交互；业务状态放 `controllers/`。
+- 数据获取集中在 `core/network/`，页面经控制器间接使用，不直接发请求。
+- 通用组件抽到 `components/`；固定配色/常量放 `theme/`，禁止散落硬编码。
+- 所有结构化数据使用 `models/` 实体，避免手写裸 Map。
 
-- 全局状态（网关状态、考生信息、全局配置）
+## 六、分支与协作
 
-### 2\. core —— 底层核心工具层（最稳定、不常改）
-
-所有**通用、无业务关联**的底层能力全部放这里。
-
-- **constants**：端口、地址、固定文本、省份常量
-
-- **utils**：文件、时间、格式化、本地存储、弹窗工具
-
-- **network**：HTTP、WebSocket、网关请求封装
-
-- **base**：页面基类、控制器基类、统一异常处理
-
-### 3\. models —— 数据模型层
-
-所有结构化数据实体，统一规范化，杜绝手写 Map。
-
-- 院校专业模型
-
-- 考生志愿数据模型
-
-- 网关状态模型
-
-- AI 智能体配置模型
-
-### 4\. services —— 业务服务层（核心解耦层）
-
-所有复杂业务逻辑、AI 调用、网关操作、数据处理全部集中在这里。
-
-**页面只调用服务，不写核心逻辑**
-
-- openclaw\_service：网关启动、停止、重连、日志读取、端口检测
-
-- agent\_service：AI 志愿分析、智能体加载、策略调度
-
-- college\_service：分数线、位次、院校数据解析
-
-- file\_service：本地数据导入导出、备份恢复
-
-### 5\. pages —— 页面视图层
-
-所有可视化页面，**一个模块一个文件夹**，页面 UI 与控制器分离。
-
-包含：首页、院校查询、志愿填报、AI 分析、网关管理、设置中心等。
-
-### 6\. widgets —— 全局公共组件
-
-所有页面共用的 UI 组件，统一复用、统一风格。
-
-- 日志展示面板
-
-- 院校卡片
-
-- 通用按钮、加载、空状态组件
-
----
-
-## ✅ 项目架构设计优势
-
-- **完全解耦**：UI、业务、AI 底层、网络、工具完全分层
-
-- **易维护**：逻辑统一在 service，页面干净清爽
-
-- **可扩展**：新增省份、新增模型、新增渠道无需改动旧代码
-
-- **多端统一**：一套代码 Windows/Android/iOS/Web 全平台编译
-
-- **AI 能力独立**：OpenClaw 网关与 Flutter 前端完全隔离，可单独升级网关
-
----
-
-## ✅ 开发规范（强制）
-
-- 页面 **只写 UI**，不写业务、不写网络、不写文件操作
-
-- 业务逻辑全部写在 **service**
-
-- 固定参数全部写在 **constants**，禁止硬编码
-
-- 所有数据使用 **models** 实体解析
-
-- 通用 UI 全部抽离到 **widgets**
-
-> （注：部分内容可能由 AI 生成）
+- `main`：主分支，受保护（禁止直接推送，需 PR 审核 + CI 通过）。
+- `dev-temp-YYYYMMDD`：临时开发分支，完成后经 PR 合入 `main`。
+- 提交信息遵循 Conventional Commits（见 `.githooks/commit-msg`）。

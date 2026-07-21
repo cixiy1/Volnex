@@ -1,0 +1,30 @@
+#!/bin/sh
+# ============================================================
+# pre-commit 钩子：对本次暂存的 .dart 文件自动执行 dart format，
+# 格式化后重新加入暂存区，保证入库代码风格统一。
+# 启用方式：git config core.hooksPath .githooks
+# ============================================================
+
+# 收集本次暂存(Added/Copied/Modified)的 .dart 文件
+staged_dart=$(git diff --cached --name-only --diff-filter=ACM -- '*.dart')
+
+if [ -z "$staged_dart" ]; then
+  exit 0
+fi
+
+echo "[pre-commit] 正在格式化暂存的 Dart 文件..."
+
+# 逐个格式化仍存在于工作区的文件
+fmt_failed=0
+for f in $staged_dart; do
+  if [ -f "$f" ]; then
+    dart format "$f" >/dev/null 2>&1 || fmt_failed=1
+    git add "$f"
+  fi
+done
+
+if [ "$fmt_failed" -ne 0 ]; then
+  echo "[pre-commit] 警告：部分文件格式化失败（dart 是否在 PATH 中？），提交继续。"
+fi
+
+exit 0
