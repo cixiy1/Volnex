@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:volnex/app/router/route_paths.dart';
-import 'package:volnex/app/router/page_routes.dart';
 
 import 'package:volnex/components/layout/home_shell.dart';
-
-import 'package:volnex/pages/app/university_detail_page.dart';
+import 'package:volnex/pages/app/home_tab/university_library_page.dart';
+import 'package:volnex/pages/app/home_tab/settings_page.dart';
+// Note: university_detail_page is not directly routed here; remove unused import to avoid warnings
 
 // 全局路由实例
 final GoRouter appRouter = GoRouter(
@@ -22,12 +22,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RoutePaths.library,
       name: 'library',
-      builder: (BuildContext context, GoRouterState state) => const LibraryPage(),
+      // 指向实际的高校库页面实现
+      builder: (BuildContext context, GoRouterState state) => const UniversityLibraryPage(),
     ),
     GoRoute(
       path: RoutePaths.settings,
-      name: 'universityDetail',
-      builder: (BuildContext context, GoRouterState state) => const UniversityDetailPage(),
+      name: 'settings',
+      builder: (BuildContext context, GoRouterState state) => const SettingsPage(),
     ),
   ],
 );
