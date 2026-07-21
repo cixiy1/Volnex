@@ -15,7 +15,7 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # 改成你本地开发使用的Flutter版本
+          flutter-version: '3.44.7'
 
       - name: Install dependencies
         run: flutter pub get
