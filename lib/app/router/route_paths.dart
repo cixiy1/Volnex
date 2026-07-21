@@ -12,8 +12,6 @@ class RoutePaths {
   /// 冷启动默认进入路径，命中 HomeShell 响应式布局。
   static const String home = '/';
 
-  /// 高校详情页路径（语义化 id，如 xmu、suda 等）
-  /// ':id' 为动态路径参数，对应 University.id。
-  /// URL 示例：/university/xmu → 厦门大学详情页
+  /// 高校详情页路径（语义化 id，如 xmu、suda 等）.':id' 为动态路径参数，对应 University.id。URL 示例：/university/xmu → 厦门大学详情页
   static const String universityDetail = '/university/:id';
 }

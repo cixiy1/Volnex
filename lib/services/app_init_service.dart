@@ -6,15 +6,11 @@ import 'package:get/get.dart';
 // 用于在设备本地存储键值对数据（主题配色、考生档案等），App 重启后数据不丢失。
 import 'package:shared_preferences/shared_preferences.dart';
 
-// 高校数据网络服务：负责从后端 API 获取高校列表并写入 UniversityRegistry
-import '../core/network/university_service.dart';
-
 // 主题控制器：持有可动态修改的种子色、背景色、全局标题
 import '../theme/theme_controller.dart';
 
 /// 全局应用初始化服务。
-/// 负责在 App 冷启动阶段（main() → app()）按顺序完成所有全局资源的初始化，
-/// 确保 UI 渲染前所有依赖已就绪。
+/// 负责在 App 冷启动阶段（main() → app()）按顺序完成所有全局资源的初始化，确保 UI 渲染前所有依赖已就绪。
 class AppInitService {
   // 全局单例：全局唯一实例，全项目通过 AppInitService.instance 访问。
   // 使用工厂构造 + 私有命名构造函数模式实现单例，确保外部只能访问 instance。
@@ -26,28 +22,11 @@ class AppInitService {
   /// main() 函数统一调用的异步初始化入口。
   /// 按顺序执行本地存储初始化 → 预加载高校数据 → 注册全局常驻服务。
   Future<void> initGlobalConfig() async {
-    // 1. 初始化本地持久化存储（SharedPreferences）。
-    //    必须在所有需要读取本地配置（如主题、考生档案）之前完成。
+    // 1. 初始化本地持久化存储（SharedPreferences）。 必须在所有需要读取本地配置（如主题、考生档案）之前完成。
     await _initLocalStorage();
 
-    // 2. 预加载高校数据到 UniversityRegistry。
-    //    在 GoRouter 解析 URL 参数之前，确保注册表已有完整高校数据，
-    //    避免用户直接通过 URL 访问详情页时注册表为空的竞速问题。
-    await _initUniversityData();
-
-    // 3. 注册全局常驻业务服务/控制器（GetX 单例）。
-    //    这些服务在 App 整个生命周期内持续存在，供任意页面 Get.find() 获取。
+    // 2. 注册全局常驻业务服务/控制器（GetX 单例）。这些服务在 App 整个生命周期内持续存在，供任意页面 Get.find() 获取。
     _registerGlobalService();
-  }
-
-  /// 预加载高校数据。
-  ///
-  /// 在 AppInitService 初始化阶段调用，确保 GoRouter 解析 URL 时
-  /// UniversityRegistry 已有数据可用，避免直接访问 URL 时注册表为空的竞速问题。
-  Future<void> _initUniversityData() async {
-    // 调用 university_service 中的 fetchUniversities()，
-    // 该函数负责从后端获取数据并写入全局 UniversityRegistry。
-    await fetchUniversities();
   }
 
   /// 初始化本地持久化存储。
@@ -63,9 +42,7 @@ class AppInitService {
     Get.put<SharedPreferences>(storage);
   }
 
-  /// 注册全局常驻业务服务/控制器。
-  ///
-  /// 这些服务在整个 App 生命周期内存在，不需要按页面创建/销毁。
+  /// 注册全局常驻业务服务/控制器。这些服务在整个 App 生命周期内存在，不需要按页面创建/销毁。
   /// Get.put() 将实例注入 GetX 容器，Get.find() 随时可取。
   void _registerGlobalService() {
     // 示例：Get.put(UserService()); // 未来如有用户服务，在此注册
