@@ -39,6 +39,7 @@ windows/flutter/ephemeral/
 *.iml
 *.ipr
 *.iws
+.metadata
 
 # ---------- 系统文件 ----------
 .DS_Store
