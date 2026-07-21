@@ -1,46 +1,28 @@
 // 学校详情页：展示更丰富的学校信息与若干信息项卡片
 //
-// 数据获取顺序：
-// 1. extra（当前会话跳转，对象直接可用，优先使用）
-// 2. pathParameters['id']（浏览器刷新 / 直接访问 URL，从注册表同步查找）
-//
-// 均无效时回退首页，保证任何情况下都不白屏崩溃。
+// universityId 由路由传入，本页调用 resolveUniversity(id) 解析为 University 对象后展示。
+// 解析失败时回退首页。
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:volnex/models/university.dart';
-import 'package:volnex/core/network/university_service.dart';
+import 'package:volnex/core/utils/university_resolver.dart';
 import 'package:volnex/app/router/route_paths.dart';
 import 'package:volnex/components/common/info_tile.dart';
 
 class UniversityDetailPage extends StatelessWidget {
   const UniversityDetailPage({
     super.key,
-    required this.university,
     required this.universityId,
   });
 
-  /// 当前会话跳转传入的完整高校对象（优先使用）
-  final dynamic university;
-
-  /// URL 路径参数 id（刷新 / 直接访问场景）
+  /// URL 路径参数 id
   final String? universityId;
-
-  /// 解析实际使用的 University 对象
-  University? _resolveUniversity() {
-    if (university is University) return university as University;
-    if (universityId != null) {
-      return UniversityRegistry.shared.findById(universityId!);
-    }
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final University? u = _resolveUniversity();
+    final University? university = resolveUniversity(universityId);
 
-    if (u == null) {
-      // id 无效或注册表为空时回退首页
+    if (university == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) {
           context.go(RoutePaths.home);
@@ -50,6 +32,8 @@ class UniversityDetailPage extends StatelessWidget {
         body: Center(child: CircularProgressIndicator()),
       );
     }
+
+    final University u = university;
 
     return Scaffold(
       appBar: AppBar(title: Text(u.name)),

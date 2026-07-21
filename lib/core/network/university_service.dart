@@ -1,10 +1,16 @@
 // 网络层：高校数据服务（模拟请求）
-// 正式对接后只需替换 fetchUniversities() 的实现
+//
+// 说明：
+// - 本文件提供高校数据的加载与查询能力，包��模拟网络请求和本地注册表；
+// - 正式对接后只需替换 fetchUniversities() 的实现为真实的 HTTP 请求即可；
+// - UniversityRegistry 作为全局数据缓存，供路由和详情页的同步查找使用。
 import 'package:flutter/material.dart';
 import 'package:volnex/models/university.dart';
 
 /// 模拟网络延迟（毫秒）
-const int _kMockDelay = 300;
+///
+/// 在真实应用中应替换为真实的网络请求，此处模拟 3 秒延迟以观察加载动画效果。
+const int _kMockDelay = 3000;
 
 /// 高校全局注册表
 ///

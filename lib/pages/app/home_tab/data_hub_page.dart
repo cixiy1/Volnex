@@ -1,4 +1,9 @@
 // 数据中心页面：展示数据来源、录取数据与校园生活等模块的简介
+//
+// 说明：
+// - 该页面作为信息展示区，简要介绍应用数据的来源来源和更新策略、高级查询能力、校园生活信息等���
+// - 目前展示为静态卡片列表，后续可扩展为完整的数据查询与浏览界面；
+// - 作为应用的功能概览，帮助用户理解各模块的作用。
 import 'package:flutter/material.dart';
 import 'package:volnex/components/common/page_header.dart';
 

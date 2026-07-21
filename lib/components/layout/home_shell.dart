@@ -33,23 +33,27 @@ class HomeShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 获取 TabIndexController：负责维护当前选中的 tab 索引（RxInt）
+    // 通过 Get.find 从 GetX 容器中查找已注册的 TabIndexController 实例
     final TabIndexController tabCtrl = Get.find<TabIndexController>();
 
-    // pages 列表定义了每个 tab 对应的页面组件，顺序需与导航项保持一致
-    // 注意：不要将非 const 的 Widget 放入 const 列表，会导致编译错误。
-    // 这里将列表设为运行时构建以避免 const 限制，同时各页面的构造函数仍可为 const
+    // 定义每个 tab 页面的 Widget 列表（按导航顺序排列）
+    // 在运行时构造列表以避免 const 限制（页面构造器非 const）
     final List<Widget> pages = <Widget>[
+      // 第 0 个 tab：智能推荐页
       RecommendationPage(),
+      // 第 1 个 tab：高校库页
       UniversityLibraryPage(),
+      // 第 2 个 tab：数据中心
       DataHubPage(),
+      // 第 3 个 tab：应用设置
       SettingsPage(),
     ];
 
-    // 使用 LayoutBuilder 根据父容器约束决定布局（宽屏/窄屏）
+    // 使用 LayoutBuilder 获取父容器的尺寸约束，据此判断应该采用何种布局
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        // 当宽度 >= 880 时视为宽屏，使用侧边栏导航；否则使用底部导航
+        // 根据可用宽度判断屏幕类型：宽屏用侧边栏导航，窄屏用底部导航
+        // 阈值 880px 是平板/桌面��手机的典型分界点
         final bool wide = constraints.maxWidth >= 880;
 
         return Scaffold(

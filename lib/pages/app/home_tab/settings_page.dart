@@ -1,3 +1,9 @@
+// 应用设置页面
+//
+// 说明：
+// - 该页面作为应用的设置/信息中心，用户可在此查看关于应用的详细信息；
+// - 目前展示为静态卡片列表，展示数据来源、录取查询、校园生活等功能介绍；
+// - 后续可扩展为真实的设置选项（如语言、主题、通知等）。
 import 'package:flutter/material.dart';
 import 'package:volnex/components/common/page_header.dart';
 

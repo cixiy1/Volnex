@@ -1,4 +1,10 @@
 // 智能推荐页：根据考生位次将高校分为冲、稳、保三类
+//
+// 说明：
+// - 该页面从 HomeController 获取全局的考生档案与高校列表，并根据"学校最低录取位次"与"考生位次"的差值分组；
+// - 冲刺组（delta < -2500）：学校位次低很多，上岸概率较低但值得尝试；
+// - 稳妥组（|delta| < 9000）：学校位次接近，上岸概率较高；
+// - 保底组（delta > 5000）：学校位次高很多，上岸概率高，作为兜底选项。
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:volnex/components/common/page_header.dart';

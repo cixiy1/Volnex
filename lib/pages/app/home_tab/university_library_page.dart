@@ -1,4 +1,10 @@
 // 高校库页面：支持关键词/标签搜索并展示筛选结果
+//
+// 说明：
+// - 该页面使用 Stateful 以维护本地的搜索条件 `_query`；
+// - 用户可以通过输入框搜索高校名称/城市，或点击预设标签快速过滤；
+// - 搜索结果通过对高校名称、城市、标签的综合字符串匹配实现，支持子字符串搜索；
+// - 与 RecommendationPage 的被动推荐不同，本页提供主动探索高校的能力。
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:volnex/components/common/page_header.dart';

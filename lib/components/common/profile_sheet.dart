@@ -1,8 +1,19 @@
 // 考生档案弹窗（底部表单）：允许用户输入省份、位次等信息
+//
+// 说明：
+// - 本工具类封装了一个静态方法 `show`，用于在任意页面弹出底部表单，采集用户的省份与全省位次；
+// - 返回值为 Tuple2(String province, int rank) 的可空值；当用户取消时返回 null，确认保存时返回新值。
+// - 注意：使用该方法时，调用者应根据返回值判断是否需要更新全局控制器（例如 HomeController）。
 import 'package:flutter/material.dart';
 
 class ProfileSheet {
   /// 显示档案弹窗，返回用户保存后的 (省份, 位次)
+  ///
+  /// 参数说明：
+  /// - [context]：当前 BuildContext，用于 showModalBottomSheet 的显示与导航上下文；
+  /// - [initialProvince] 与 [initialRank]：作为表单的初始值，便于用户在已有档案的情况下快速调整。
+  ///
+  /// 返回：用户点击保存时返回 `(province, candidateRank)`，点击取消返回 null。
   static Future<(String, int)?> show(
     BuildContext context, {
     required String initialProvince,
