@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 /// 中文说明：GetX 响应式状态管理控制器，负责全局 tab 索引切换。
 class TabIndexController extends GetxController {
   /// 当前选中 tab 的索引（响应式变量）
-  /// 
+  ///
   /// `.obs` 后缀使该变量变为可观测的（Observable），任何对其 `.value` 的改变都会通知监听器。
   final RxInt currentIndex = 0.obs;
 
